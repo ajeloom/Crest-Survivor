@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cp128uihwi1kg"]
+[gd_scene load_steps=6 format=3 uid="uid://cp128uihwi1kg"]
 
 [ext_resource type="Texture2D" uid="uid://t7idbjf06fyg" path="res://icon.svg" id="1_0ffdq"]
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_qcodt"]
+[ext_resource type="PackedScene" uid="uid://csu6v2ri4du7k" path="res://Scenes/hurtbox_component.tscn" id="3_ejlna"]
+[ext_resource type="PackedScene" uid="uid://b4o58lwccgcq7" path="res://Scenes/health_component.tscn" id="4_0smx1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7ho73"]
 radius = 64.0078
@@ -19,3 +21,12 @@ shape = SubResource("CircleShape2D_7ho73")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(5, 5)
+
+[node name="HurtboxComponent" parent="." instance=ExtResource("3_ejlna")]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+shape = SubResource("CircleShape2D_7ho73")
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_0smx1")]

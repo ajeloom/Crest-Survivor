@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://csu6v2ri4du7k"]
+
+[ext_resource type="Script" path="res://Scripts/HurtboxComponent.cs" id="1_3n4sp"]
+
+[node name="HurtboxComponent" type="Area2D" groups=["Hurtbox"]]
+script = ExtResource("1_3n4sp")
+
+[connection signal="area_entered" from="." to="." method="OnAreaEntered"]

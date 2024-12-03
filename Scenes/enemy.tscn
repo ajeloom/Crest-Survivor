@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://e13myoyutyks"]
+[gd_scene load_steps=7 format=3 uid="uid://e13myoyutyks"]
 
 [ext_resource type="Script" path="res://Scripts/Enemy.cs" id="1_5kt2i"]
 [ext_resource type="Texture2D" uid="uid://t7idbjf06fyg" path="res://icon.svg" id="1_rgbhv"]
+[ext_resource type="PackedScene" uid="uid://csu6v2ri4du7k" path="res://Scenes/hurtbox_component.tscn" id="3_35iqd"]
+[ext_resource type="PackedScene" uid="uid://b4o58lwccgcq7" path="res://Scenes/health_component.tscn" id="4_3gt8s"]
+[ext_resource type="PackedScene" uid="uid://din7nidp4mk77" path="res://Scenes/hitbox_component.tscn" id="5_15hwm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_h46st"]
 radius = 64.0
@@ -16,4 +19,22 @@ modulate = Color(1, 0, 0, 1)
 texture = ExtResource("1_rgbhv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Enemy"]]
+shape = SubResource("CircleShape2D_h46st")
+
+[node name="HurtboxComponent" parent="." instance=ExtResource("3_35iqd")]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent" groups=["Enemy"]]
+visible = false
+shape = SubResource("CircleShape2D_h46st")
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_3gt8s")]
+
+[node name="HitboxComponent" parent="." instance=ExtResource("5_15hwm")]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent" groups=["Enemy"]]
+visible = false
 shape = SubResource("CircleShape2D_h46st")
