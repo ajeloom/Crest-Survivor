@@ -30,6 +30,11 @@ public partial class HealthComponent : Node2D
 	{
 		currentHealth -= damageNumber;
 
+		if (GetParent().IsInGroup("Player")) {
+			AnimationPlayer animPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+			animPlayer.Play("DamageFlash");
+		}
+
 		// Destroy the object
 		if (currentHealth <= 0.0f) {
 			GetParent().QueueFree();
