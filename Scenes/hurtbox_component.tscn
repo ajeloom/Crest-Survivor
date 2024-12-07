@@ -6,3 +6,4 @@
 script = ExtResource("1_3n4sp")
 
 [connection signal="area_entered" from="." to="." method="OnAreaEntered"]
+[connection signal="area_exited" from="." to="." method="OnAreaExited"]

@@ -14,3 +14,7 @@ scale = Vector2(0.125, 0.125)
 
 [node name="Enemy" parent="." instance=ExtResource("3_2qqwk")]
 position = Vector2(126, 46)
+
+[node name="Enemy2" parent="." instance=ExtResource("3_2qqwk")]
+position = Vector2(39, 108)
+speed = 20.0

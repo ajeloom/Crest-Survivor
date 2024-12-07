@@ -4,7 +4,7 @@ using System;
 public partial class HealthComponent : Node2D
 {
 	private float currentHealth;
-	[Export] private float maxHealth = 10.0f;
+	[Export] private float maxHealth = 100.0f;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -25,11 +25,12 @@ public partial class HealthComponent : Node2D
 		}
 	}
 
-	// Called by a hitbox component
+	// Called by a hurtbox component
 	public void Damage(float damageNumber)
 	{
 		currentHealth -= damageNumber;
 
+		// Play damage animation for player
 		if (GetParent().IsInGroup("Player")) {
 			AnimationPlayer animPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 			animPlayer.Play("DamageFlash");

@@ -15,12 +15,8 @@ public partial class HitboxComponent : Area2D
 	{
 	}
 
-	private void OnAreaEntered(Area2D area)
+	public float GetDamageNumber()
 	{
-		// Damage the character associated with the hurtbox
-		if (area.IsInGroup("Hurtbox")) {
-			HealthComponent healthComponent = area.GetParent().GetNode<HealthComponent>("HealthComponent");
-			healthComponent.Damage(damageNumber);
-		}
+		return damageNumber;
 	}
 }
