@@ -1,0 +1,159 @@
+[gd_scene load_steps=2 format=3 uid="uid://cavrjw1vy5j64"]
+
+[ext_resource type="Script" path="res://Scripts/Settings.cs" id="1_8h6fq"]
+
+[node name="Settings" type="Control" node_paths=PackedStringArray("FPSSpinBox", "checkBox")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8h6fq")
+FPSSpinBox = NodePath("MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer/SpinBox")
+checkBox = NodePath("MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer2/CheckBox")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -31.0
+offset_top = 100.0
+offset_right = 31.0
+offset_bottom = 123.0
+grow_horizontal = 2
+text = "Settings"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = 576.0
+offset_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 200
+theme_override_constants/margin_bottom = 300
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+current_tab = 0
+
+[node name="Video" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Video"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer"]
+layout_mode = 2
+text = "FPS:"
+
+[node name="SpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer"]
+layout_mode = 2
+max_value = 1000.0
+value = 60.0
+rounded = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Video"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer2"]
+layout_mode = 2
+text = "Display FPS:"
+
+[node name="CheckBox" type="CheckBox" parent="MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer2"]
+layout_mode = 2
+
+[node name="Audio" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/HBoxContainer"]
+layout_mode = 2
+text = "Volume:"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio/HBoxContainer"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+
+[node name="Controls" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="MoveUp" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Controls"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Controls/MoveUp"]
+layout_mode = 2
+text = "Move Up:"
+
+[node name="MoveDown" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Controls"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Controls/MoveDown"]
+layout_mode = 2
+text = "Move Down:"
+
+[node name="MoveRight" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Controls"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Controls/MoveRight"]
+layout_mode = 2
+text = "Move Right:"
+
+[node name="MoveLeft" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Controls"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Controls/MoveLeft"]
+layout_mode = 2
+text = "Move Left:"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 82.0
+offset_bottom = 82.0
+text = "X"
+
+[node name="ApplyButton" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -26.0
+offset_top = -131.0
+offset_right = 26.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Apply"
+
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer/SpinBox" to="." method="FPSValueChanged"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TabContainer/Video/HBoxContainer2/CheckBox" to="." method="DisplayFPSPressed"]
+[connection signal="pressed" from="BackButton" to="." method="BackButtonPressed"]
+[connection signal="pressed" from="ApplyButton" to="." method="ApplyButtonPressed"]
