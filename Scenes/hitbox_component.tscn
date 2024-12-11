@@ -3,4 +3,5 @@
 [ext_resource type="Script" path="res://Scripts/HitboxComponent.cs" id="1_8qh0c"]
 
 [node name="HitboxComponent" type="Area2D" groups=["Hitbox"]]
+process_mode = 1
 script = ExtResource("1_8qh0c")

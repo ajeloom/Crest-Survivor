@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/HurtboxComponent.cs" id="1_3n4sp"]
 
 [node name="HurtboxComponent" type="Area2D" groups=["Hurtbox"]]
+process_mode = 1
 script = ExtResource("1_3n4sp")
 
 [connection signal="area_entered" from="." to="." method="OnAreaEntered"]

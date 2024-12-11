@@ -50,6 +50,7 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
+process_mode = 3
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_qcodt")
@@ -98,6 +99,7 @@ scale = Vector2(2, 2)
 text = "5/10"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HealthComponent"]
+process_mode = 1
 root_node = NodePath("../../HurtboxComponent")
 libraries = {
 "": SubResource("AnimationLibrary_8ucgc")
