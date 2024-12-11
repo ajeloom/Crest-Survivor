@@ -8,7 +8,7 @@ public partial class FPSDisplay : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		label = GetNode<Label>("Label");
+		label = GetNode<Label>("CanvasLayer/Label");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
