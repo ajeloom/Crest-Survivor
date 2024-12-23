@@ -30,6 +30,11 @@ public partial class PauseMenu : Control
 
 	private void QuitButtonPressed()
 	{
+		if (Multiplayer.MultiplayerPeer != null) {
+			Multiplayer.MultiplayerPeer.Close();
+			Multiplayer.MultiplayerPeer = null;
+		}
+
 		Unpause();
 		gm.GoToScene("res://Scenes/main_menu.tscn");
 	}

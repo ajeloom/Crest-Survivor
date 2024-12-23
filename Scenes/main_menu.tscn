@@ -31,12 +31,27 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -88.0
+offset_top = -65.5
+offset_right = 88.0
+offset_bottom = -34.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Play"
+
+[node name="MultiplayerButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.0
 offset_top = -15.5
 offset_right = 88.0
 offset_bottom = 15.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "Play"
+text = "Multiplayer"
 
 [node name="SettingsButton" type="Button" parent="."]
 layout_mode = 1
@@ -69,5 +84,6 @@ grow_vertical = 2
 text = "Quit"
 
 [connection signal="pressed" from="PlayButton" to="." method="PlayButtonPressed"]
+[connection signal="pressed" from="MultiplayerButton" to="." method="MultiplayerButtonPressed"]
 [connection signal="pressed" from="SettingsButton" to="." method="SettingsButtonPressed"]
 [connection signal="pressed" from="QuitButton" to="." method="QuitButtonPressed"]

@@ -7,13 +7,24 @@ public partial class Player : CharacterBody2D
 
 	private GameManager gm;
 
-	public override void _Ready()
+	public override void _EnterTree()
+	{
+		if (Multiplayer.MultiplayerPeer != null) {
+			SetMultiplayerAuthority(Convert.ToInt32(Name));
+		}
+	}
+
+    public override void _Ready()
 	{
 		gm = GetNode<GameManager>("/root/GameManager");
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
+		if (Multiplayer.MultiplayerPeer != null && !IsMultiplayerAuthority()) {
+			return;
+		}
+
 		if (!gm.isPaused) {
 			Vector2 velocity = Velocity;
 

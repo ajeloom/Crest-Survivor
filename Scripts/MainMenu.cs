@@ -21,6 +21,11 @@ public partial class MainMenu : Control
 		gm.GoToScene("res://Scenes/main.tscn");
 	}
 
+	private void MultiplayerButtonPressed()
+	{
+		gm.GoToScene("res://Scenes/multiplayer_menu.tscn");
+	}
+
 	private void SettingsButtonPressed()
 	{
 		gm.GoToScene("res://Scenes/settings.tscn");

@@ -10,7 +10,6 @@
 
 [node name="Player" parent="." instance=ExtResource("2_nfu40")]
 position = Vector2(8, 8)
-scale = Vector2(0.125, 0.125)
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
 remote_path = NodePath("../../Camera2D")
