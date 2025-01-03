@@ -11,6 +11,7 @@ public partial class MultiplayerMenu : Node2D
 
 	private CanvasLayer canvasLayer;
 	private PackedScene playerScene;
+	private PackedScene enemyScene;
 
 	private Node2D map;
 
@@ -34,17 +35,28 @@ public partial class MultiplayerMenu : Node2D
 	{
 		Instance = this;
 		playerScene = GD.Load<PackedScene>("res://Scenes/player.tscn");
+		enemyScene = GD.Load<PackedScene>("res://Scenes/enemy.tscn");
 		canvasLayer = GetNode<CanvasLayer>("CanvasLayer");
 		map = GetNode<Node2D>("Map");
 
 		playerInfo.Clear();
-		playerInfo["Name2"] = "PlayerName2"; 
+		// playerInfo["Name2"] = "PlayerName2";
 
+		// Will run these functions when these signals occur
 		Multiplayer.PeerConnected += OnPlayerConnected;
 		Multiplayer.PeerDisconnected += OnPlayerDisconnected;
         Multiplayer.ConnectedToServer += OnConnectOk;
         Multiplayer.ConnectionFailed += OnConnectionFail;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
+
+		if (!Multiplayer.IsServer()) {
+			return;
+		}
+
+		// Add players at the start of the multiplayer game
+		foreach (int id in Multiplayer.GetPeers()) {
+			AddPlayer(id);
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -68,6 +80,9 @@ public partial class MultiplayerMenu : Node2D
 		if (!OS.HasFeature("dedicated_server")) {
 			AddPlayer(Multiplayer.GetUniqueId());
 		}
+
+		// Test for spawning enemies
+		CallDeferred(MethodName.SpawnEnemies, null);
 	}
 
 	private void JoinButtonPressed()
@@ -77,10 +92,6 @@ public partial class MultiplayerMenu : Node2D
 		peer.CreateClient(DefaultServerIP, PORT);
 		Multiplayer.MultiplayerPeer = peer;
 		JoiningGame();
-
-		if (!Multiplayer.IsServer()) {
-			AddPlayer(Multiplayer.GetUniqueId());
-		}
 	}
 
 	private void StartButtonPressed()
@@ -89,11 +100,19 @@ public partial class MultiplayerMenu : Node2D
 		// Rpc(MethodName.LoadGame, "res://Scenes/game.tscn");
 	}
 
+	private void BackButtonPressed()
+	{
+		var gm = GetNode<GameManager>("/root/GameManager");
+		gm.GoToScene("res://Scenes/main_menu.tscn");
+	}
+
 	private void JoiningGame()
 	{
 		// Hide the UI
 		canvasLayer.Visible = false;
 		map.Visible = true;
+		Button backButton = GetNode<Button>("BackButton");
+		backButton.Visible = false;
 	}
 
 	[Rpc(CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -102,11 +121,29 @@ public partial class MultiplayerMenu : Node2D
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
+	private void SpawnEnemies()
+	{
+		Node2D enemies = GetNode<Node2D>("Enemies");
+		Node2D enemy = (Node2D)enemyScene.Instantiate();
+
+		// Set the enemy's position
+		// enemy.Position = ;
+
+		// Spawn them
+		enemies.AddChild(enemy, true);
+	}
+
+	// Spawns the player
 	private void AddPlayer(int playerId)
 	{
+		if (!Multiplayer.IsServer()) {
+			return;
+		}
+
+		Node2D players = GetNode<Node2D>("Players");
 		var player = playerScene.Instantiate();
 		player.Name = playerId.ToString();
-		AddChild(player, true);
+		players.AddChild(player, true);
 	}
 
 	private void Spawn(Node2D player)
@@ -117,12 +154,13 @@ public partial class MultiplayerMenu : Node2D
 
 	private void DeletePlayer(int playerId)
 	{
-		var temp = GetNode(playerId.ToString());
+		var temp = GetNode("Players/"+ playerId.ToString());
 		temp.QueueFree();
 	}
 
 	private void OnPlayerConnected(long id)
     {
+		GD.Print("Player " + id.ToString() + " joined the game");
         RpcId(id, MethodName.RegisterPlayer, playerInfo);
 		AddPlayer((int)id);
     }

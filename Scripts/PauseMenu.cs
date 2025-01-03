@@ -18,6 +18,8 @@ public partial class PauseMenu : Control
 
 	private void Unpause()
 	{
+		InputSynchronizer input = GetParent<InputSynchronizer>();
+		input.inMenu = false;
 		gm.isPaused = false;
 		GetTree().Paused = false;
 	}

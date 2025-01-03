@@ -1,0 +1,195 @@
+[gd_scene load_steps=15 format=3 uid="uid://bpasnnm2v5r7j"]
+
+[ext_resource type="Texture2D" uid="uid://t7idbjf06fyg" path="res://icon.svg" id="2_mokv8"]
+[ext_resource type="PackedScene" uid="uid://csu6v2ri4du7k" path="res://Scenes/hurtbox_component.tscn" id="3_so08p"]
+[ext_resource type="PackedScene" uid="uid://b4o58lwccgcq7" path="res://Scenes/health_component.tscn" id="4_kuxoa"]
+[ext_resource type="Texture2D" uid="uid://ck1nexg4c51t2" path="res://Textures/UI/HP_Over.png" id="5_14jgb"]
+[ext_resource type="Texture2D" uid="uid://dmpinpiab0ttk" path="res://Textures/UI/HP_Under.png" id="6_6t4sb"]
+[ext_resource type="Texture2D" uid="uid://bhpj2tstjiqyx" path="res://Textures/UI/HP_Progress.png" id="7_tdfyc"]
+[ext_resource type="Script" path="res://Scripts/InputSynchronizer.cs" id="8_62iel"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_nxlq0"]
+script/source = "using Godot;
+using System;
+
+public partial class MultiplayerPlayer : CharacterBody2D
+{
+	[Export] public float speed = 50.0f;
+
+	private InputSynchronizer inputSynchronizer;
+
+	private int playerId;
+
+	private GameManager gm;
+
+	public override void _EnterTree()
+	{
+		inputSynchronizer = GetNode<InputSynchronizer>(\"InputSynchronizer\");
+		if (Multiplayer.MultiplayerPeer != null) {
+			SetMultiplayerAuthority(Convert.ToInt32(Name));
+		}
+	}
+
+    public override void _Ready()
+	{
+		gm = GetNode<GameManager>(\"/root/GameManager\");
+	}
+
+	public override void _PhysicsProcess(double delta)
+	{
+		if (Multiplayer.MultiplayerPeer != null && !IsMultiplayerAuthority()) {
+			return;
+		}
+
+		if (!gm.isPaused) {
+			Vector2 velocity = Velocity;
+
+			Vector2 direction = inputSynchronizer.inputDirection;
+			if (direction != Vector2.Zero)
+			{
+				velocity.X = direction.X * speed;
+				velocity.Y = direction.Y * speed;
+			}
+			else
+			{
+				velocity.X = Mathf.MoveToward(Velocity.X, 0, speed);
+				velocity.Y = Mathf.MoveToward(Velocity.Y, 0, speed);
+			}
+
+			Velocity = velocity;
+			MoveAndSlide();
+		}
+
+		if (Input.IsActionJustPressed(\"Pause\") && !gm.isPaused) {
+			var scene = GD.Load<PackedScene>(\"res://Scenes/pause_menu.tscn\");
+			AddChild(scene.Instantiate());
+			gm.isPaused = true;
+			GetTree().Paused = true;
+		}
+		else if (Input.IsActionJustPressed(\"Pause\") && gm.isPaused) {
+			Control node = GetNode<Control>(\"PauseMenu\");
+			node.QueueFree();
+			gm.isPaused = false;
+			GetTree().Paused = false;
+		}
+	}
+}
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wc44r"]
+radius = 64.0078
+
+[sub_resource type="Animation" id="Animation_p1rke"]
+resource_name = "DamageFlash"
+length = 2.4
+step = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.2, 1.6, 2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_rsr64"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8ucgc"]
+_data = {
+"DamageFlash": SubResource("Animation_p1rke"),
+"RESET": SubResource("Animation_rsr64")
+}
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p7ctr"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_g30yq"]
+
+[node name="MultiplayerPlayer" type="CharacterBody2D"]
+scale = Vector2(0.125, 0.125)
+script = SubResource("CSharpScript_nxlq0")
+speed = null
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_mokv8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_wc44r")
+
+[node name="HurtboxComponent" parent="." instance=ExtResource("3_so08p")]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+shape = SubResource("CircleShape2D_wc44r")
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_kuxoa")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="HealthComponent"]
+
+[node name="HPBorder" type="Sprite2D" parent="HealthComponent/CanvasLayer"]
+position = Vector2(96, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("5_14jgb")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="HealthComponent/CanvasLayer"]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 54.0
+offset_bottom = 52.0
+scale = Vector2(4, 4)
+value = 100.0
+texture_under = ExtResource("6_6t4sb")
+texture_progress = ExtResource("7_tdfyc")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HealthComponent/CanvasLayer"]
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 58.0
+offset_bottom = 34.0
+scale = Vector2(2, 2)
+text = "5/10"
+metadata/_edit_use_anchors_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HealthComponent"]
+process_mode = 1
+root_node = NodePath("../../HurtboxComponent")
+libraries = {
+"": SubResource("AnimationLibrary_8ucgc")
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(5, 5)
+limit_left = -16
+limit_top = -16
+limit_right = 1168
+limit_bottom = 656
+position_smoothing_enabled = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_p7ctr")
+
+[node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="."]
+unique_name_in_owner = true
+replication_config = SubResource("SceneReplicationConfig_g30yq")
+script = ExtResource("8_62iel")
