@@ -80,6 +80,13 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Name"
 
+[node name="BackButton" type="Button" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 82.0
+offset_bottom = 82.0
+text = "X"
+
 [node name="Spawn1" type="Node2D" parent="."]
 visible = false
 position = Vector2(10, 10)
@@ -110,14 +117,7 @@ _spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
 spawn_path = NodePath("../Players")
 spawn_limit = 4
 
-[node name="BackButton" type="Button" parent="."]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 82.0
-offset_bottom = 82.0
-text = "X"
-
 [connection signal="pressed" from="CanvasLayer/HostButton" to="." method="HostButtonPressed"]
 [connection signal="pressed" from="CanvasLayer/JoinButton" to="." method="JoinButtonPressed"]
 [connection signal="pressed" from="CanvasLayer/StartButton" to="." method="StartButtonPressed"]
-[connection signal="pressed" from="BackButton" to="." method="BackButtonPressed"]
+[connection signal="pressed" from="CanvasLayer/BackButton" to="." method="BackButtonPressed"]

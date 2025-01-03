@@ -7,7 +7,7 @@ public partial class MultiplayerMenu : Node2D
 
 	private const string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
 	private const int PORT = 9999;
-	// private ENetMultiplayerPeer peer = new ENetMultiplayerPeer();
+	private ENetMultiplayerPeer peer = new ENetMultiplayerPeer();
 
 	private CanvasLayer canvasLayer;
 	private PackedScene playerScene;
@@ -64,11 +64,14 @@ public partial class MultiplayerMenu : Node2D
 	{
 	}
 
-	private void HostButtonPressed()
+	private Error HostButtonPressed()
 	{
 		// Create the server
-		var peer = new ENetMultiplayerPeer();
-		peer.CreateServer(PORT, 4);
+		Error error = peer.CreateServer(PORT, 4);
+		if (error != Error.Ok) {
+			return error;
+		}
+
 		Multiplayer.MultiplayerPeer = peer;
 		JoiningGame();
 
@@ -83,15 +86,22 @@ public partial class MultiplayerMenu : Node2D
 
 		// Test for spawning enemies
 		CallDeferred(MethodName.SpawnEnemies, null);
+
+		return Error.Ok;
 	}
 
-	private void JoinButtonPressed()
+	private Error JoinButtonPressed()
 	{
 		// Join the server
-		var peer = new ENetMultiplayerPeer();
-		peer.CreateClient(DefaultServerIP, PORT);
+		Error error = peer.CreateClient(DefaultServerIP, PORT);
+		if (error != Error.Ok) {
+			return error;
+		}
+		
 		Multiplayer.MultiplayerPeer = peer;
 		JoiningGame();
+
+		return Error.Ok;
 	}
 
 	private void StartButtonPressed()
@@ -111,8 +121,6 @@ public partial class MultiplayerMenu : Node2D
 		// Hide the UI
 		canvasLayer.Visible = false;
 		map.Visible = true;
-		Button backButton = GetNode<Button>("BackButton");
-		backButton.Visible = false;
 	}
 
 	[Rpc(CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -193,13 +201,13 @@ public partial class MultiplayerMenu : Node2D
 
 	private void OnConnectionFail()
     {
-        Multiplayer.MultiplayerPeer = null;
+        Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
     }
 
 	// This function will disconnect any clients on the server when host disconnects
     private void OnServerDisconnected()
     {
-        Multiplayer.MultiplayerPeer = null;
+        Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
         players.Clear();
         EmitSignal(SignalName.ServerDisconnected);
 

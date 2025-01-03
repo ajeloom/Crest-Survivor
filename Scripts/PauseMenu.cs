@@ -32,9 +32,9 @@ public partial class PauseMenu : Control
 
 	private void QuitButtonPressed()
 	{
-		if (Multiplayer.MultiplayerPeer != null) {
+		if (Multiplayer.HasMultiplayerPeer()) {
 			Multiplayer.MultiplayerPeer.Close();
-			Multiplayer.MultiplayerPeer = null;
+			Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
 		}
 
 		Unpause();

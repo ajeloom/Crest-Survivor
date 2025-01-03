@@ -45,7 +45,7 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta)
 	{
 		// Control the player's movement locally
-		if (IsMultiplayerAuthority()) {
+		if (IsMultiplayerAuthority() && input != null) {
 			Movement();
 		}
 	}
