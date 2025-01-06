@@ -58,7 +58,7 @@ public partial class Enemy : CharacterBody2D
 		if (!checkDistance) {
 			checkDistance = true;
 
-			Node2D players = GetNode<Node2D>("/root/MultiplayerMenu/Players");
+			Node2D players = GetNode<Node2D>("/root/Game/Players");
 			double closest = 0.0;
 
 			for (int i = 0; i < players.GetChildCount(); i++) {

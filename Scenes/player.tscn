@@ -58,7 +58,7 @@ properties/0/replication_mode = 2
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wpplm"]
 properties/0/path = NodePath("InputSynchronizer:inputDirection")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 2
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 process_mode = 3

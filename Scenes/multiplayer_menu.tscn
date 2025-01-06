@@ -1,17 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://b5chxsf67vpel"]
+[gd_scene load_steps=2 format=3 uid="uid://b5chxsf67vpel"]
 
 [ext_resource type="Script" path="res://Scripts/MultiplayerMenu.cs" id="1_ijcv3"]
-[ext_resource type="PackedScene" uid="uid://bgs42idx6m5un" path="res://Scenes/map.tscn" id="2_38m41"]
 
-[node name="MultiplayerMenu" type="Node2D"]
+[node name="MultiplayerMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_ijcv3")
 
-[node name="Map" parent="." instance=ExtResource("2_38m41")]
-visible = false
+[node name="Server" type="CanvasLayer" parent="."]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="Label" type="Label" parent="Server"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -22,7 +20,7 @@ offset_bottom = 173.0
 grow_horizontal = 2
 text = "Multiplayer"
 
-[node name="HostButton" type="Button" parent="CanvasLayer"]
+[node name="HostButton" type="Button" parent="Server"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -36,7 +34,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Host"
 
-[node name="JoinButton" type="Button" parent="CanvasLayer"]
+[node name="JoinButton" type="Button" parent="Server"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -50,22 +48,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Join"
 
-[node name="StartButton" type="Button" parent="CanvasLayer"]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -88.0
-offset_top = 34.5
-offset_right = 88.0
-offset_bottom = 65.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Start Game"
-
-[node name="Name" type="LineEdit" parent="CanvasLayer"]
+[node name="Name" type="LineEdit" parent="Server"]
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
@@ -80,44 +63,182 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Name"
 
-[node name="BackButton" type="Button" parent="CanvasLayer"]
+[node name="BackButton" type="Button" parent="Server"]
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 82.0
 offset_bottom = 82.0
 text = "X"
 
-[node name="Spawn1" type="Node2D" parent="."]
+[node name="Lobby" type="CanvasLayer" parent="."]
 visible = false
-position = Vector2(10, 10)
 
-[node name="Spawn2" type="Node2D" parent="."]
-visible = false
-position = Vector2(50, 10)
+[node name="Label" type="Label" parent="Lobby"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_top = 100.0
+offset_right = 23.5
+offset_bottom = 123.0
+grow_horizontal = 2
+text = "Lobby"
 
-[node name="Spawn3" type="Node2D" parent="."]
-visible = false
-position = Vector2(90, 10)
+[node name="MarginContainer" type="MarginContainer" parent="Lobby"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Spawn4" type="Node2D" parent="."]
-visible = false
-position = Vector2(130, 10)
+[node name="HBoxContainer" type="HBoxContainer" parent="Lobby/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 200
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Control" type="Control" parent="Lobby/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
 
-[node name="EnemySpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Scenes/enemy.tscn")
-spawn_path = NodePath("../Enemies")
-spawn_limit = 100
+[node name="Backdrop" type="ColorRect" parent="Lobby/MarginContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -125.0
+offset_right = 67.5
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
 
-[node name="Players" type="Node2D" parent="."]
+[node name="Label" type="Label" parent="Lobby/MarginContainer/HBoxContainer/Control/Backdrop"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_right = 23.5
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Name"
 
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
-spawn_path = NodePath("../Players")
-spawn_limit = 4
+[node name="Control2" type="Control" parent="Lobby/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
 
-[connection signal="pressed" from="CanvasLayer/HostButton" to="." method="HostButtonPressed"]
-[connection signal="pressed" from="CanvasLayer/JoinButton" to="." method="JoinButtonPressed"]
-[connection signal="pressed" from="CanvasLayer/StartButton" to="." method="StartButtonPressed"]
-[connection signal="pressed" from="CanvasLayer/BackButton" to="." method="BackButtonPressed"]
+[node name="Backdrop" type="ColorRect" parent="Lobby/MarginContainer/HBoxContainer/Control2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -125.0
+offset_right = 67.5
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="Label" type="Label" parent="Lobby/MarginContainer/HBoxContainer/Control2/Backdrop"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_right = 23.5
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Name"
+
+[node name="Control3" type="Control" parent="Lobby/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Backdrop" type="ColorRect" parent="Lobby/MarginContainer/HBoxContainer/Control3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -125.0
+offset_right = 67.5
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="Label" type="Label" parent="Lobby/MarginContainer/HBoxContainer/Control3/Backdrop"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_right = 23.5
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Name"
+
+[node name="Control4" type="Control" parent="Lobby/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Backdrop" type="ColorRect" parent="Lobby/MarginContainer/HBoxContainer/Control4"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -125.0
+offset_right = 67.5
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="Label" type="Label" parent="Lobby/MarginContainer/HBoxContainer/Control4/Backdrop"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_right = 23.5
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Name"
+
+[node name="StartButton" type="Button" parent="Lobby"]
+anchors_preset = -1
+anchor_left = 0.85
+anchor_top = 0.915
+anchor_right = 0.97
+anchor_bottom = 0.95
+offset_left = -176.0
+offset_top = -31.0
+offset_right = 0.00012207
+grow_horizontal = 0
+grow_vertical = 0
+text = "Start Game"
+
+[node name="BackButton" type="Button" parent="Lobby"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 82.0
+offset_bottom = 82.0
+text = "X"
+
+[connection signal="pressed" from="Server/HostButton" to="." method="HostButtonPressed"]
+[connection signal="pressed" from="Server/JoinButton" to="." method="JoinButtonPressed"]
+[connection signal="pressed" from="Server/BackButton" to="." method="BackButtonPressed"]
+[connection signal="pressed" from="Lobby/StartButton" to="." method="StartButtonPressed"]
+[connection signal="pressed" from="Lobby/BackButton" to="." method="BackButtonPressed"]

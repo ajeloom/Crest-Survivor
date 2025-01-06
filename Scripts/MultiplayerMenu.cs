@@ -1,19 +1,18 @@
 using Godot;
 using System;
 
-public partial class MultiplayerMenu : Node2D
+public partial class MultiplayerMenu : Control
 {
 	public static MultiplayerMenu Instance { get; private set; }
 
 	private const string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
 	private const int PORT = 9999;
-	private ENetMultiplayerPeer peer = new ENetMultiplayerPeer();
+	private ENetMultiplayerPeer peer;
 
-	private CanvasLayer canvasLayer;
+	private CanvasLayer server;
+	private CanvasLayer lobby;
 	private PackedScene playerScene;
 	private PackedScene enemyScene;
-
-	private Node2D map;
 
 	[Signal] public delegate void PlayerConnectedEventHandler(int peerId, Godot.Collections.Dictionary<string, string> playerInfo);
 	[Signal] public delegate void PlayerDisconnectedEventHandler(int peerId);
@@ -36,8 +35,8 @@ public partial class MultiplayerMenu : Node2D
 		Instance = this;
 		playerScene = GD.Load<PackedScene>("res://Scenes/player.tscn");
 		enemyScene = GD.Load<PackedScene>("res://Scenes/enemy.tscn");
-		canvasLayer = GetNode<CanvasLayer>("CanvasLayer");
-		map = GetNode<Node2D>("Map");
+		server = GetNode<CanvasLayer>("Server");
+		lobby = GetNode<CanvasLayer>("Lobby");
 
 		playerInfo.Clear();
 		// playerInfo["Name2"] = "PlayerName2";
@@ -48,15 +47,6 @@ public partial class MultiplayerMenu : Node2D
         Multiplayer.ConnectedToServer += OnConnectOk;
         Multiplayer.ConnectionFailed += OnConnectionFail;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
-
-		if (!Multiplayer.IsServer()) {
-			return;
-		}
-
-		// Add players at the start of the multiplayer game
-		foreach (int id in Multiplayer.GetPeers()) {
-			AddPlayer(id);
-		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -67,25 +57,21 @@ public partial class MultiplayerMenu : Node2D
 	private Error HostButtonPressed()
 	{
 		// Create the server
+		peer = new ENetMultiplayerPeer();
 		Error error = peer.CreateServer(PORT, 4);
 		if (error != Error.Ok) {
 			return error;
 		}
 
+		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
+
 		Multiplayer.MultiplayerPeer = peer;
-		JoiningGame();
+
+		JoinLobby();
 
 		// Update the player's info
 		players[1] = playerInfo;
 		EmitSignal(SignalName.PlayerConnected, 1, playerInfo);
-
-		// Instantiate a player node
-		if (!OS.HasFeature("dedicated_server")) {
-			AddPlayer(Multiplayer.GetUniqueId());
-		}
-
-		// Test for spawning enemies
-		CallDeferred(MethodName.SpawnEnemies, null);
 
 		return Error.Ok;
 	}
@@ -93,84 +79,79 @@ public partial class MultiplayerMenu : Node2D
 	private Error JoinButtonPressed()
 	{
 		// Join the server
+		peer = new ENetMultiplayerPeer();
 		Error error = peer.CreateClient(DefaultServerIP, PORT);
 		if (error != Error.Ok) {
 			return error;
 		}
 		
+		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
+
 		Multiplayer.MultiplayerPeer = peer;
-		JoiningGame();
+
+		JoinLobby();
 
 		return Error.Ok;
 	}
 
 	private void StartButtonPressed()
 	{
-		canvasLayer.Visible = false;
-		// Rpc(MethodName.LoadGame, "res://Scenes/game.tscn");
+		peer.RefuseNewConnections = true;
+		Rpc(MethodName.LoadGame, "res://Scenes/game.tscn");
 	}
 
 	private void BackButtonPressed()
 	{
+		if (Multiplayer.IsServer()) {
+			ClearServer();
+		}
+
 		var gm = GetNode<GameManager>("/root/GameManager");
 		gm.GoToScene("res://Scenes/main_menu.tscn");
 	}
 
-	private void JoiningGame()
+	
+
+	private void JoinLobby()
 	{
 		// Hide the UI
-		canvasLayer.Visible = false;
-		map.Visible = true;
+		server.Visible = false;
+		lobby.Visible = true;
+
+		if (!Multiplayer.IsServer()) {
+			Button startButton = GetNode<Button>("Lobby/StartButton");
+			startButton.Visible = false;
+		}
 	}
 
-	[Rpc(CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void LoadGame(string gameScenePath)
     {
-        GetTree().ChangeSceneToFile(gameScenePath);
+		var scene = ResourceLoader.Load<PackedScene>(gameScenePath);
+		Node node = scene.Instantiate();
+		GetTree().Root.AddChild(node);
+		lobby.Visible = false;
     }
 
-	private void SpawnEnemies()
-	{
-		Node2D enemies = GetNode<Node2D>("Enemies");
-		Node2D enemy = (Node2D)enemyScene.Instantiate();
-
-		// Set the enemy's position
-		// enemy.Position = ;
-
-		// Spawn them
-		enemies.AddChild(enemy, true);
-	}
-
-	// Spawns the player
-	private void AddPlayer(int playerId)
-	{
-		if (!Multiplayer.IsServer()) {
-			return;
-		}
-
-		Node2D players = GetNode<Node2D>("Players");
-		var player = playerScene.Instantiate();
-		player.Name = playerId.ToString();
-		players.AddChild(player, true);
-	}
-
-	private void Spawn(Node2D player)
-	{
-		var spawn = GetNode<Node2D>("Spawn1");
-		player.Position = spawn.Position;
-	}
-
-	private void DeletePlayer(int playerId)
-	{
-		var temp = GetNode("Players/"+ playerId.ToString());
-		temp.QueueFree();
-	}
+	// Every peer will call this when they have loaded the game scene.
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void PlayerLoaded()
+    {
+        if (Multiplayer.IsServer())
+        {
+            playersLoaded += 1;
+            if (playersLoaded == players.Count)
+            {
+                GetNode<Game>("/root/Game").StartGame();
+                playersLoaded = 0;
+            }
+        }
+    }
 
 	private void OnPlayerConnected(long id)
     {
 		GD.Print("Player " + id.ToString() + " joined the game");
         RpcId(id, MethodName.RegisterPlayer, playerInfo);
-		AddPlayer((int)id);
     }
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -185,7 +166,6 @@ public partial class MultiplayerMenu : Node2D
     {
 		GD.Print("Player " + id.ToString() + " disconnected from the game");
 		players.Remove(id);
-		DeletePlayer((int)id);
 
 		if (id == 1) {
 			OnServerDisconnected();
@@ -211,7 +191,60 @@ public partial class MultiplayerMenu : Node2D
         players.Clear();
         EmitSignal(SignalName.ServerDisconnected);
 
+		Game game = GetNodeOrNull<Game>("/root/Game");
+		if (game != null) {
+			game.QueueFree();
+		}
+
 		var gm = GetNode<GameManager>("/root/GameManager");
 		gm.GoToScene("res://Scenes/host_disconnection.tscn");
     }
+
+	public void ClearServer()
+	{
+		var peer = (ENetMultiplayerPeer)Multiplayer.MultiplayerPeer;
+		peer.Host.Dispose();
+        Multiplayer.MultiplayerPeer.Dispose();
+        Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private Error CanPlayerJoin()
+	{
+		if (Multiplayer.MultiplayerPeer.RefuseNewConnections == true) {
+			return Error.CantConnect;
+		}
+
+		Game game = GetNodeOrNull<Game>("/root/Game");
+		if (game == null) {
+			return Error.Ok;
+		}
+
+		if (game.gameStarted) {
+			return Error.Failed;
+		}
+
+		return Error.Ok;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private Error HostDisconnect(long id)
+	{
+		Multiplayer.MultiplayerPeer.DisconnectPeer((int)id);
+		return Error.Ok;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private Error DisconnectPlayer()
+	{
+		GD.Print("Can't join the server. Game is in progress.");
+		
+		// Multiplayer.MultiplayerPeer.Close();
+		// Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
+
+		// var gm = GetNode<GameManager>("/root/GameManager");
+		// gm.GoToScene("res://Scenes/main_menu.tscn");
+
+		return Error.CantConnect;
+	}
 }

@@ -33,8 +33,18 @@ public partial class PauseMenu : Control
 	private void QuitButtonPressed()
 	{
 		if (Multiplayer.HasMultiplayerPeer()) {
-			Multiplayer.MultiplayerPeer.Close();
-			Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
+			if (Multiplayer.IsServer()) {
+				MultiplayerMenu menu = GetNode<MultiplayerMenu>("/root/MultiplayerMenu");
+				menu.ClearServer();
+			}
+			else {
+				Multiplayer.MultiplayerPeer.Close();
+				Multiplayer.MultiplayerPeer = new OfflineMultiplayerPeer();
+			}
+
+			// Close multiplayer game
+			var temp = GetTree().Root.GetNode("Game");
+			temp.QueueFree();
 		}
 
 		Unpause();

@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3 uid="uid://plfr31j2d5go"]
+
+[ext_resource type="Script" path="res://Scripts/Game.cs" id="1_2i804"]
+[ext_resource type="PackedScene" uid="uid://bgs42idx6m5un" path="res://Scenes/map.tscn" id="1_84ndq"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_d6emb"]
+properties/0/path = NodePath(".:gameStarted")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_2i804")
+
+[node name="Map" parent="." instance=ExtResource("1_84ndq")]
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
+spawn_path = NodePath("../Players")
+spawn_limit = 4
+
+[node name="EnemySpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://Scenes/enemy.tscn")
+spawn_path = NodePath("../Enemies")
+spawn_limit = 100
+
+[node name="Spawn1" type="Node2D" parent="."]
+visible = false
+position = Vector2(10, 10)
+
+[node name="Spawn2" type="Node2D" parent="."]
+visible = false
+position = Vector2(50, 10)
+
+[node name="Spawn3" type="Node2D" parent="."]
+visible = false
+position = Vector2(90, 10)
+
+[node name="Spawn4" type="Node2D" parent="."]
+visible = false
+position = Vector2(130, 10)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_d6emb")
