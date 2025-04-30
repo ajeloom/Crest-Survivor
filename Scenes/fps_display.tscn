@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://yl2cjctlnuk6"]
 
-[ext_resource type="Script" path="res://Scripts/FPSDisplay.cs" id="1_njnud"]
+[ext_resource type="Script" uid="uid://c7rld53quud1a" path="res://Scripts/FPSDisplay.cs" id="1_njnud"]
 
 [node name="FPSDisplay" type="Control"]
 process_mode = 3

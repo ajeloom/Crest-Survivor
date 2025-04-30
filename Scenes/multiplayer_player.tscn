@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ck1nexg4c51t2" path="res://Textures/UI/HP_Over.png" id="5_14jgb"]
 [ext_resource type="Texture2D" uid="uid://dmpinpiab0ttk" path="res://Textures/UI/HP_Under.png" id="6_6t4sb"]
 [ext_resource type="Texture2D" uid="uid://bhpj2tstjiqyx" path="res://Textures/UI/HP_Progress.png" id="7_tdfyc"]
-[ext_resource type="Script" path="res://Scripts/InputSynchronizer.cs" id="8_62iel"]
+[ext_resource type="Script" uid="uid://chjepqcwbvavd" path="res://Scripts/InputSynchronizer.cs" id="8_62iel"]
 
 [sub_resource type="CSharpScript" id="CSharpScript_nxlq0"]
 script/source = "using Godot;
@@ -113,8 +113,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8ucgc"]
 _data = {
-"DamageFlash": SubResource("Animation_p1rke"),
-"RESET": SubResource("Animation_rsr64")
+&"DamageFlash": SubResource("Animation_p1rke"),
+&"RESET": SubResource("Animation_rsr64")
 }
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p7ctr"]

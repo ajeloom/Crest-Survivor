@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://din7nidp4mk77"]
 
-[ext_resource type="Script" path="res://Scripts/HitboxComponent.cs" id="1_8qh0c"]
+[ext_resource type="Script" uid="uid://b8rhyslgkfhgu" path="res://Scripts/HitboxComponent.cs" id="1_8qh0c"]
 
 [node name="HitboxComponent" type="Area2D" groups=["Hitbox"]]
 process_mode = 1

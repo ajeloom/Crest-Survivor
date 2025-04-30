@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cmx35e7fqich1"]
 
-[ext_resource type="Script" path="res://Scripts/HostDisconnection.cs" id="1_jvoso"]
+[ext_resource type="Script" uid="uid://dj1irpfg0wtyb" path="res://Scripts/HostDisconnection.cs" id="1_jvoso"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq1b2"]
 font_size = 30

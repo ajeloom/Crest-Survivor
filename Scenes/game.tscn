@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://plfr31j2d5go"]
 
-[ext_resource type="Script" path="res://Scripts/Game.cs" id="1_2i804"]
+[ext_resource type="Script" uid="uid://cd7yc8uu4swo6" path="res://Scripts/Game.cs" id="1_2i804"]
 [ext_resource type="PackedScene" uid="uid://bgs42idx6m5un" path="res://Scenes/map.tscn" id="1_84ndq"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_d6emb"]
@@ -17,6 +17,20 @@ script = ExtResource("1_2i804")
 
 [node name="Enemies" type="Node2D" parent="."]
 
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Spawn0" type="Node2D" parent="Spawns"]
+position = Vector2(10, 10)
+
+[node name="Spawn1" type="Node2D" parent="Spawns"]
+position = Vector2(50, 10)
+
+[node name="Spawn2" type="Node2D" parent="Spawns"]
+position = Vector2(90, 10)
+
+[node name="Spawn3" type="Node2D" parent="Spawns"]
+position = Vector2(130, 10)
+
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
 spawn_path = NodePath("../Players")
@@ -27,21 +41,19 @@ _spawnable_scenes = PackedStringArray("res://Scenes/enemy.tscn")
 spawn_path = NodePath("../Enemies")
 spawn_limit = 100
 
-[node name="Spawn1" type="Node2D" parent="."]
-visible = false
-position = Vector2(10, 10)
-
-[node name="Spawn2" type="Node2D" parent="."]
-visible = false
-position = Vector2(50, 10)
-
-[node name="Spawn3" type="Node2D" parent="."]
-visible = false
-position = Vector2(90, 10)
-
-[node name="Spawn4" type="Node2D" parent="."]
-visible = false
-position = Vector2(130, 10)
-
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_d6emb")
+
+[node name="PlayerSpawns" type="Node2D" parent="."]
+
+[node name="Spawn0" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(20, 50)
+
+[node name="Spawn1" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(60, 50)
+
+[node name="Spawn2" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(100, 50)
+
+[node name="Spawn3" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(140, 50)

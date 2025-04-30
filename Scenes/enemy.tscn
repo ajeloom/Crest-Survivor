@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://e13myoyutyks"]
 
-[ext_resource type="Script" path="res://Scripts/Enemy.cs" id="1_5kt2i"]
+[ext_resource type="Script" uid="uid://ouu5bxya5yuv" path="res://Scripts/Enemy.cs" id="1_5kt2i"]
 [ext_resource type="Texture2D" uid="uid://t7idbjf06fyg" path="res://icon.svg" id="1_rgbhv"]
 [ext_resource type="PackedScene" uid="uid://csu6v2ri4du7k" path="res://Scenes/hurtbox_component.tscn" id="3_35iqd"]
 [ext_resource type="PackedScene" uid="uid://b4o58lwccgcq7" path="res://Scenes/health_component.tscn" id="4_3gt8s"]

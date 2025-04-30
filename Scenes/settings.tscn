@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cavrjw1vy5j64"]
 
-[ext_resource type="Script" path="res://Scripts/Settings.cs" id="1_8h6fq"]
+[ext_resource type="Script" uid="uid://dg2vfkulhywf" path="res://Scripts/Settings.cs" id="1_8h6fq"]
 
 [node name="Settings" type="Control" node_paths=PackedStringArray("FPSSpinBox", "checkBox")]
 layout_mode = 3

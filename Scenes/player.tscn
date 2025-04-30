@@ -1,13 +1,13 @@
 [gd_scene load_steps=15 format=3 uid="uid://cp128uihwi1kg"]
 
 [ext_resource type="Texture2D" uid="uid://t7idbjf06fyg" path="res://icon.svg" id="1_0ffdq"]
-[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_qcodt"]
+[ext_resource type="Script" uid="uid://x107s6ijel05" path="res://Scripts/Player.cs" id="1_qcodt"]
 [ext_resource type="PackedScene" uid="uid://csu6v2ri4du7k" path="res://Scenes/hurtbox_component.tscn" id="3_ejlna"]
 [ext_resource type="PackedScene" uid="uid://b4o58lwccgcq7" path="res://Scenes/health_component.tscn" id="4_0smx1"]
 [ext_resource type="Texture2D" uid="uid://dmpinpiab0ttk" path="res://Textures/UI/HP_Under.png" id="5_r3g21"]
 [ext_resource type="Texture2D" uid="uid://ck1nexg4c51t2" path="res://Textures/UI/HP_Over.png" id="6_4f6qe"]
 [ext_resource type="Texture2D" uid="uid://bhpj2tstjiqyx" path="res://Textures/UI/HP_Progress.png" id="7_v671n"]
-[ext_resource type="Script" path="res://Scripts/InputSynchronizer.cs" id="8_vhuti"]
+[ext_resource type="Script" uid="uid://chjepqcwbvavd" path="res://Scripts/InputSynchronizer.cs" id="8_vhuti"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7ho73"]
 radius = 64.0078
@@ -46,8 +46,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8ucgc"]
 _data = {
-"DamageFlash": SubResource("Animation_p1rke"),
-"RESET": SubResource("Animation_rsr64")
+&"DamageFlash": SubResource("Animation_p1rke"),
+&"RESET": SubResource("Animation_rsr64")
 }
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jagdp"]

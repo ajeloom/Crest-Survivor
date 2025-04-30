@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b4o58lwccgcq7"]
 
-[ext_resource type="Script" path="res://Scripts/HealthComponent.cs" id="1_y1wuk"]
+[ext_resource type="Script" uid="uid://qkljscf3cfmy" path="res://Scripts/HealthComponent.cs" id="1_y1wuk"]
 
 [node name="HealthComponent" type="Node2D"]
 process_mode = 1

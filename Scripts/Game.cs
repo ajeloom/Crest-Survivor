@@ -8,6 +8,9 @@ public partial class Game : Node2D
 
 	public bool gameStarted = false;
 
+	private bool playersSpawned = false;
+	private bool enemiesSpawned = false;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -56,9 +59,6 @@ public partial class Game : Node2D
 			AddPlayer(id);
 		}
 
-		// Spawn enemies
-		CallDeferred(MethodName.SpawnEnemies, null);
-
 		gameStarted = true;
     }
 
@@ -74,8 +74,32 @@ public partial class Game : Node2D
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public async override void _Process(double delta)
 	{
+		if (!Multiplayer.IsServer()) {
+			return;
+		}
+
+		foreach (int id in Multiplayer.GetPeers()) {
+			GD.Print(id);
+		}
+
+		if (!playersSpawned) {
+			playersSpawned = true;
+			await ToSignal(GetTree().CreateTimer(1.0f), SceneTreeTimer.SignalName.Timeout);
+			for (int i = 0; i < Multiplayer.GetPeers().Length; i++) {
+				CallDeferred(MethodName.MovePlayers, i);
+				
+			}
+		}
+
+		// Spawn enemies every 8 seconds
+		if (!enemiesSpawned) {
+			enemiesSpawned = true;
+			CallDeferred(MethodName.SpawnEnemies, null);
+			await ToSignal(GetTree().CreateTimer(8.0f), SceneTreeTimer.SignalName.Timeout);
+			enemiesSpawned = false;
+		}
 	}
 
 	public void AddPlayer(int playerId)
@@ -93,9 +117,17 @@ public partial class Game : Node2D
 		temp.QueueFree();
 	}
 
+	private void MovePlayers(int i)
+	{
+		Node2D players = GetNode<Node2D>("Players");
+		Node2D player = (Node2D)players.GetChild(i);
+		Node2D spawn = GetNode<Node2D>("PlayerSpawns/Spawn" + i.ToString());
+		player.Position = spawn.Position;
+	}
+
 	private void SpawnPlayer(Node2D player)
 	{
-		var spawn = GetNode<Node2D>("Spawn1");
+		var spawn = GetNode<Node2D>("Spawns/Spawn1");
 		player.Position = spawn.Position;
 	}
 
@@ -105,9 +137,20 @@ public partial class Game : Node2D
 		Node2D enemy = (Node2D)enemyScene.Instantiate();
 
 		// Set the enemy's position
-		// enemy.Position = ;
+		enemy.Position = GetRandomSpawnPosition();
 
 		// Spawn them
 		enemies.AddChild(enemy, true);
+	}
+
+	private Vector2 GetRandomSpawnPosition()
+	{
+		// Gets a random number between 0 and less than 4
+		Random rnd = new Random();
+		int num = rnd.Next(4);
+
+		Node2D spawn = GetNode<Node2D>("Spawns/Spawn" + num.ToString());
+
+		return spawn.Position;
 	}
 }
