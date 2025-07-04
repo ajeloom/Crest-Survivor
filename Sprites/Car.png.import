@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmpinpiab0ttk"
-path="res://.godot/imported/HP_Under.png-489ab679958dfd0669e1880ce727d56a.ctex"
+uid="uid://kv0ccx3rgg66"
+path="res://.godot/imported/Car.png-5e00b5a4defe79128321d132c367443f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/UI/HP_Under.png"
-dest_files=["res://.godot/imported/HP_Under.png-489ab679958dfd0669e1880ce727d56a.ctex"]
+source_file="res://Sprites/Car.png"
+dest_files=["res://.godot/imported/Car.png-5e00b5a4defe79128321d132c367443f.ctex"]
 
 [params]
 

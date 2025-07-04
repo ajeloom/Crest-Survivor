@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=4 uid="uid://bgs42idx6m5un"]
 
-[ext_resource type="Texture2D" uid="uid://dvv741l8y3o58" path="res://Textures/Tiles/Grass.png" id="1_l036k"]
-[ext_resource type="Texture2D" uid="uid://brcrnybpvr8re" path="res://Textures/Tiles/Wall.png" id="2_ask0u"]
+[ext_resource type="Texture2D" uid="uid://dvv741l8y3o58" path="res://Sprites/Tiles/Grass.png" id="1_l036k"]
+[ext_resource type="Texture2D" uid="uid://brcrnybpvr8re" path="res://Sprites/Tiles/Wall.png" id="2_ask0u"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_72pxa"]
 

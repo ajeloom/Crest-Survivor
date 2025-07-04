@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://t7idbjf06fyg" path="res://icon.svg" id="2_mokv8"]
 [ext_resource type="PackedScene" uid="uid://csu6v2ri4du7k" path="res://Scenes/hurtbox_component.tscn" id="3_so08p"]
 [ext_resource type="PackedScene" uid="uid://b4o58lwccgcq7" path="res://Scenes/health_component.tscn" id="4_kuxoa"]
-[ext_resource type="Texture2D" uid="uid://ck1nexg4c51t2" path="res://Textures/UI/HP_Over.png" id="5_14jgb"]
-[ext_resource type="Texture2D" uid="uid://dmpinpiab0ttk" path="res://Textures/UI/HP_Under.png" id="6_6t4sb"]
-[ext_resource type="Texture2D" uid="uid://bhpj2tstjiqyx" path="res://Textures/UI/HP_Progress.png" id="7_tdfyc"]
+[ext_resource type="Texture2D" uid="uid://ck1nexg4c51t2" path="res://Sprites/UI/HP_Over.png" id="5_14jgb"]
+[ext_resource type="Texture2D" uid="uid://dmpinpiab0ttk" path="res://Sprites/UI/HP_Under.png" id="6_6t4sb"]
+[ext_resource type="Texture2D" uid="uid://bhpj2tstjiqyx" path="res://Sprites/UI/HP_Progress.png" id="7_tdfyc"]
 [ext_resource type="Script" uid="uid://chjepqcwbvavd" path="res://Scripts/InputSynchronizer.cs" id="8_62iel"]
 
 [sub_resource type="CSharpScript" id="CSharpScript_nxlq0"]
@@ -175,7 +175,7 @@ metadata/_edit_use_anchors_ = true
 process_mode = 1
 root_node = NodePath("../../HurtboxComponent")
 libraries = {
-"": SubResource("AnimationLibrary_8ucgc")
+&"": SubResource("AnimationLibrary_8ucgc")
 }
 
 [node name="Camera2D" type="Camera2D" parent="."]

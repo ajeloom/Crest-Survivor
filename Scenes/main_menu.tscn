@@ -21,7 +21,7 @@ offset_top = 100.0
 offset_right = 20.0
 offset_bottom = 123.0
 grow_horizontal = 2
-text = "Crest Survivor"
+text = "Survivor Game"
 
 [node name="PlayButton" type="Button" parent="."]
 layout_mode = 1

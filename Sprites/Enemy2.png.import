@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhpj2tstjiqyx"
-path="res://.godot/imported/HP_Progress.png-87bbe6a11407f5bbe6c8a7505b74d471.ctex"
+uid="uid://bkjk1lwg6g5nl"
+path="res://.godot/imported/Enemy2.png-2fb4ace00e1d683caa8d2f5e5321dca0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/UI/HP_Progress.png"
-dest_files=["res://.godot/imported/HP_Progress.png-87bbe6a11407f5bbe6c8a7505b74d471.ctex"]
+source_file="res://Sprites/Enemy2.png"
+dest_files=["res://.godot/imported/Enemy2.png-2fb4ace00e1d683caa8d2f5e5321dca0.ctex"]
 
 [params]
 

@@ -11,11 +11,18 @@ public partial class Game : Node2D
 	private bool playersSpawned = false;
 	private bool enemiesSpawned = false;
 
+	private MultiplayerSpawner enemySpawner;
+
+	int playerNum = 0;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		// enemySpawner = GetNode<MultiplayerSpawner>("EnemySpawner");
+		// enemySpawner.SpawnFunction = SpawnEnemies();
+
 		playerScene = GD.Load<PackedScene>("res://Scenes/player.tscn");
-		enemyScene = GD.Load<PackedScene>("res://Scenes/enemy.tscn");
+		enemyScene = GD.Load<PackedScene>("res://Scenes/general.tscn");
 
 		MultiplayerMenu.Instance.RpcId(1, MultiplayerMenu.MethodName.PlayerLoaded);
 
@@ -80,19 +87,6 @@ public partial class Game : Node2D
 			return;
 		}
 
-		foreach (int id in Multiplayer.GetPeers()) {
-			GD.Print(id);
-		}
-
-		if (!playersSpawned) {
-			playersSpawned = true;
-			await ToSignal(GetTree().CreateTimer(1.0f), SceneTreeTimer.SignalName.Timeout);
-			for (int i = 0; i < Multiplayer.GetPeers().Length; i++) {
-				CallDeferred(MethodName.MovePlayers, i);
-				
-			}
-		}
-
 		// Spawn enemies every 8 seconds
 		if (!enemiesSpawned) {
 			enemiesSpawned = true;
@@ -108,6 +102,8 @@ public partial class Game : Node2D
 		var player = playerScene.Instantiate();
 		player.Name = playerId.ToString();
 		players.AddChild(player, true);
+		Rpc(MethodName.PositionPlayerRpc, playerNum);
+		playerNum++;
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -117,17 +113,12 @@ public partial class Game : Node2D
 		temp.QueueFree();
 	}
 
-	private void MovePlayers(int i)
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void PositionPlayerRpc(int i)
 	{
 		Node2D players = GetNode<Node2D>("Players");
 		Node2D player = (Node2D)players.GetChild(i);
 		Node2D spawn = GetNode<Node2D>("PlayerSpawns/Spawn" + i.ToString());
-		player.Position = spawn.Position;
-	}
-
-	private void SpawnPlayer(Node2D player)
-	{
-		var spawn = GetNode<Node2D>("Spawns/Spawn1");
 		player.Position = spawn.Position;
 	}
 
