@@ -17,6 +17,22 @@ script = ExtResource("1_2i804")
 
 [node name="Enemies" type="Node2D" parent="."]
 
+[node name="Projectiles" type="Node2D" parent="."]
+
+[node name="PlayerSpawns" type="Node2D" parent="."]
+
+[node name="Spawn0" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(50, 100)
+
+[node name="Spawn1" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(100, 100)
+
+[node name="Spawn2" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(150, 100)
+
+[node name="Spawn3" type="Node2D" parent="PlayerSpawns"]
+position = Vector2(200, 100)
+
 [node name="Spawns" type="Node2D" parent="."]
 
 [node name="Spawn0" type="Node2D" parent="Spawns"]
@@ -44,16 +60,6 @@ spawn_limit = 100
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_d6emb")
 
-[node name="PlayerSpawns" type="Node2D" parent="."]
-
-[node name="Spawn0" type="Node2D" parent="PlayerSpawns"]
-position = Vector2(50, 100)
-
-[node name="Spawn1" type="Node2D" parent="PlayerSpawns"]
-position = Vector2(100, 100)
-
-[node name="Spawn2" type="Node2D" parent="PlayerSpawns"]
-position = Vector2(150, 100)
-
-[node name="Spawn3" type="Node2D" parent="PlayerSpawns"]
-position = Vector2(200, 100)
+[node name="ProjectileSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://cuc6sbm60q8lv")
+spawn_path = NodePath("../Projectiles")

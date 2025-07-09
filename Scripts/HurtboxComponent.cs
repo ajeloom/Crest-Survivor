@@ -17,16 +17,19 @@ public partial class HurtboxComponent : Area2D
 	public async override void _Process(double delta)
 	{
 		if (GetParent().IsInGroup("Player")) {
-			if (tookDamage) {
+			if (tookDamage)
+			{
 				// Player will be invincible for 2.5 seconds after taking damage
-				if (!isInvincible) {
+				if (!isInvincible)
+				{
 					isInvincible = true;
 					await ToSignal(GetTree().CreateTimer(2.5f), SceneTreeTimer.SignalName.Timeout);
 					isInvincible = false;
 					tookDamage = false;
 				}
 			}
-			else if (!tookDamage && HasOverlappingAreas() && hitbox != null) {
+			else if (!tookDamage && HasOverlappingAreas() && hitbox != null)
+			{
 				// Damage player if are colliding with a hitbox after the invincibility ends
 				CallDamage();
 			}
@@ -52,7 +55,7 @@ public partial class HurtboxComponent : Area2D
 
 	// Calls the Damage() function in HealthComponent
 	private void CallDamage()
-	{		
+	{
 		tookDamage = true;
 		HealthComponent healthComponent = GetParent().GetNode<HealthComponent>("HealthComponent");
 		healthComponent.Damage(hitbox.GetDamageNumber());

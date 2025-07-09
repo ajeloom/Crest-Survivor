@@ -72,4 +72,5 @@ autoplay = "Move"
 shape = SubResource("CapsuleShape2D_lssre")
 
 [node name="CollisionShape2D" parent="HitboxComponent" index="0"]
+visible = true
 shape = SubResource("CapsuleShape2D_wlnc2")

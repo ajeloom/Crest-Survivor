@@ -86,9 +86,10 @@ public partial class Game : Node2D
 		if (!Multiplayer.IsServer()) {
 			return;
 		}
-
+		
 		// Spawn enemies every 8 seconds
-		if (!enemiesSpawned) {
+		if (!enemiesSpawned)
+		{
 			enemiesSpawned = true;
 			CallDeferred(MethodName.SpawnEnemies, null);
 			await ToSignal(GetTree().CreateTimer(8.0f), SceneTreeTimer.SignalName.Timeout);

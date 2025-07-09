@@ -16,6 +16,29 @@ public partial class Player : CharacterBody2D
 	private AnimationPlayer animPlayer;
 	private AnimationTree animTree;
 
+	private PackedScene projectileScene;
+	private float attackCoolDown = 3.0f;
+	private bool isAttacking = false;
+
+	private Area2D attackRangeArea;     // Only detects Node2D bodies in the enemy layer
+	private bool checkDistance = false;
+	private Node2D target;
+
+	/*
+	 * Attack Power - how much damage a player's attack does
+	 * Attack Speed - how fast a player's attack moves
+	 * Attack Rate - how often a player can attack
+	 * Attack Range - how far an enemy can be before a player attacks 
+	 * Move Speed - how fast a player moves
+	 * Dodge Chance - how often a player doesn't take damage from an attack
+	*/
+	private float attackPower = 1.0f;
+	private float attackSpeed = 1.0f;
+	private float attackRate = 1.0f;
+	private float attackRange = 1.0f;
+	private float moveSpeed = 1.0f;
+	private float dodgeChance = 1.0f;
+
 	public override void _EnterTree()
 	{
 		playerId = Convert.ToInt32(Name);
@@ -34,6 +57,8 @@ public partial class Player : CharacterBody2D
 		animPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 		animTree = GetNode<AnimationTree>("AnimationTree");
 		sprite = GetNode<Sprite2D>("Sprite2D");
+		projectileScene = GD.Load<PackedScene>("res://Scenes/projectile.tscn");
+		attackRangeArea = GetNode<Area2D>("AttackRange");
 
 		if (Multiplayer.GetUniqueId() == playerId)
 		{
@@ -59,13 +84,21 @@ public partial class Player : CharacterBody2D
 		if (IsMultiplayerAuthority() && input != null)
 		{
 			Movement();
-		}
 
-		// if (input != null)
-		// {
-		// 	PlayAnimation();
-		// }
-		
+			if (attackRangeArea.HasOverlappingBodies())
+			{
+				GetClosestTarget();
+
+				if (!isAttacking && target != null)
+				{
+					Rpc(MethodName.SpawnProjectileRpc, new Vector2(target.Position.X - GlobalPosition.X, target.Position.Y - GlobalPosition.Y));
+				}
+			}
+			else
+			{
+				target = null;
+			}
+		}
 	}
 
 	public override void _Process(double delta)
@@ -82,20 +115,8 @@ public partial class Player : CharacterBody2D
 			velocity.X = direction.X * speed;
 			velocity.Y = direction.Y * speed;
 
-
 			animTree.Set("parameters/conditions/moving", true);
 			animTree.Set("parameters/conditions/idle", false);
-
-			// if (velocity.X > 0.0f)
-			// {
-			// 	// sprite.FlipH = true;
-			// 	// animPlayer.Play("MoveRight");
-			// }
-			// else
-			// {
-			// 	// sprite.FlipH = false;
-			// 	// animPlayer.Play("MoveLeft");
-			// }
 
 			animTree.Set("parameters/Move/blend_position", direction);
 			animTree.Set("parameters/Idle/blend_position", direction);
@@ -105,8 +126,6 @@ public partial class Player : CharacterBody2D
 			velocity.X = Mathf.MoveToward(Velocity.X, 0, speed);
 			velocity.Y = Mathf.MoveToward(Velocity.Y, 0, speed);
 
-			// animPlayer.Play("Idle");
-
 			animTree.Set("parameters/conditions/moving", false);
 			animTree.Set("parameters/conditions/idle", true);
 		}
@@ -115,20 +134,56 @@ public partial class Player : CharacterBody2D
 		MoveAndSlide();
 	}
 
-	// private void PlayAnimation()
-	// {
-	// 	Vector2 direction = input.inputDirection;
-	// 	if (direction != Vector2.Zero)
-	// 	{
-	// 		animTree.Set("parameters/conditions/moving", true);
-	// 		animTree.Set("parameters/conditions/idle", false);
-	// 		animTree.Set("parameters/Move/blend_position", direction);
-	// 		animTree.Set("parameters/Idle/blend_position", direction);
-	// 	}
-	// 	else
-	// 	{
-	// 		animTree.Set("parameters/conditions/moving", false);
-	// 		animTree.Set("parameters/conditions/idle", true);
-	// 	}
-	// }
+
+	// Pick closest enemy to attack
+	private void GetClosestTarget()
+	{
+		if (!checkDistance)
+		{
+			checkDistance = true;
+
+			CollisionShape2D shape = attackRangeArea.GetNode<CollisionShape2D>("CollisionShape2D");
+			CircleShape2D circle = (CircleShape2D)shape.Shape;
+			double closest = circle.Radius * 2;
+
+			Godot.Collections.Array<Node2D> array = attackRangeArea.GetOverlappingBodies();
+
+			// Look at every enemy inside the attack range
+			for (int i = 0; i < array.Count; i++)
+			{
+				Node2D temp = array[i];
+
+				// Find the distance between the enemy and player
+				float xPos = temp.Position.X - Position.X;
+				float yPos = temp.Position.Y - Position.Y;
+				double dist = Math.Sqrt(Math.Pow(xPos, 2) + Math.Pow(yPos, 2));
+
+				// Target the closest enemy
+				if (dist < closest)
+				{
+					closest = dist;
+					target = temp;
+				}
+			}
+
+			checkDistance = false;
+		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private async void SpawnProjectileRpc(Vector2 direction)
+	{
+		if (!isAttacking)
+		{
+			isAttacking = true;
+
+			Projectile projectile = (Projectile)projectileScene.Instantiate();
+			projectile.GlobalPosition = GlobalPosition;
+			projectile.Rotation = direction.Angle();
+			GetTree().Root.AddChild(projectile, true);
+
+			await ToSignal(GetTree().CreateTimer(attackCoolDown), SceneTreeTimer.SignalName.Timeout);
+			isAttacking = false;
+		}
+	}
 }
