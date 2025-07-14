@@ -258,6 +258,9 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath("AnimationTree:parameters/Move/blend_position")
 properties/3/spawn = true
 properties/3/replication_mode = 1
+properties/4/path = NodePath("HealthComponent:currentHealth")
+properties/4/spawn = true
+properties/4/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wpplm"]
 properties/0/path = NodePath("InputSynchronizer:inputDirection")

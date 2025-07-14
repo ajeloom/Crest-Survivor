@@ -30,7 +30,7 @@ shape = SubResource("CircleShape2D_h46st")
 
 [node name="HurtboxComponent" parent="." instance=ExtResource("3_35iqd")]
 collision_layer = 4
-collision_mask = 10
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent" groups=["Enemy"]]
 visible = false

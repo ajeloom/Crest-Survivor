@@ -15,7 +15,7 @@ public partial class HealthComponent : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if (GetParent().IsInGroup("Player"))
+		if (IsMultiplayerAuthority() && GetParent().IsInGroup("Player"))
 		{
 			TextureProgressBar bar = GetNode<TextureProgressBar>("CanvasLayer/TextureProgressBar");
 			Label label = GetNode<Label>("CanvasLayer/Label");
@@ -26,25 +26,22 @@ public partial class HealthComponent : Node2D
 		}
 	}
 
-	// Called by a hurtbox component	
+	// Called by a hurtbox component
 	public void Damage(float damageNumber)
 	{
-		if (IsMultiplayerAuthority())
+		currentHealth -= damageNumber;
+
+		// Play damage animation for player
+		if (GetParent().IsInGroup("Player"))
 		{
-			currentHealth -= damageNumber;
+			AnimationPlayer animPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+			animPlayer.Play("DamageFlash");
+		}
 
-			// Play damage animation for player
-			if (GetParent().IsInGroup("Player"))
-			{
-				AnimationPlayer animPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-				animPlayer.Play("DamageFlash");
-			}
-
-			// Destroy the object
-			if (currentHealth <= 0.0f)
-			{
-				GetParent().QueueFree();
-			}
+		// Destroy the object
+		if (Multiplayer.IsServer() && currentHealth <= 0.0f)
+		{
+			GetParent().QueueFree();
 		}
 	}
 }

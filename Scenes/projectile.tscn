@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cuc6sbm60q8lv"]
+[gd_scene load_steps=7 format=3 uid="uid://d1rod06y6lsy8"]
 
 [ext_resource type="Script" uid="uid://sltkyixiht2l" path="res://Scripts/Projectile.cs" id="1_yr2qt"]
 [ext_resource type="Texture2D" uid="uid://ce37mop3q4kgx" path="res://Sprites/Bullet.png" id="2_tl4hk"]
@@ -11,6 +11,14 @@ height = 8.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_d4467"]
 radius = 2.0
 height = 8.0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_do1bu"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [node name="Projectile" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 8
@@ -38,6 +46,9 @@ shape = SubResource("CapsuleShape2D_d4467")
 wait_time = 5.0
 one_shot = true
 autostart = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_do1bu")
 
 [connection signal="area_entered" from="HitboxComponent" to="." method="OnAreaEntered"]
 [connection signal="body_entered" from="HitboxComponent" to="." method="OnBodyEntered"]

@@ -78,7 +78,7 @@ public partial class Player : CharacterBody2D
 		input = GetNode<InputSynchronizer>("InputSynchronizer");
 	}
 
-	public override void _PhysicsProcess(double delta)
+	public async override void _PhysicsProcess(double delta)
 	{
 		// Control the player's movement locally
 		if (IsMultiplayerAuthority() && input != null)
@@ -91,7 +91,10 @@ public partial class Player : CharacterBody2D
 
 				if (!isAttacking && target != null)
 				{
-					Rpc(MethodName.SpawnProjectileRpc, new Vector2(target.Position.X - GlobalPosition.X, target.Position.Y - GlobalPosition.Y));
+					isAttacking = true;
+					RpcId(1, MethodName.SpawnProjectileRpc, new Vector2(target.Position.X - GlobalPosition.X, target.Position.Y - GlobalPosition.Y));
+					await ToSignal(GetTree().CreateTimer(attackCoolDown), SceneTreeTimer.SignalName.Timeout);
+					isAttacking = false;
 				}
 			}
 			else
@@ -170,20 +173,19 @@ public partial class Player : CharacterBody2D
 		}
 	}
 
+	// Server spawns a projectile
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private async void SpawnProjectileRpc(Vector2 direction)
+	private void SpawnProjectileRpc(Vector2 direction)
 	{
-		if (!isAttacking)
+		if (Multiplayer.IsServer())
 		{
-			isAttacking = true;
+			Node2D spawnPath = GetNode<Node2D>("/root/Game/Projectiles");
 
 			Projectile projectile = (Projectile)projectileScene.Instantiate();
 			projectile.GlobalPosition = GlobalPosition;
 			projectile.Rotation = direction.Angle();
-			GetTree().Root.AddChild(projectile, true);
 
-			await ToSignal(GetTree().CreateTimer(attackCoolDown), SceneTreeTimer.SignalName.Timeout);
-			isAttacking = false;
+			spawnPath.AddChild(projectile, true);
 		}
 	}
 }

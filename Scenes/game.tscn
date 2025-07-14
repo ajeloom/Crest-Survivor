@@ -61,5 +61,5 @@ spawn_limit = 100
 replication_config = SubResource("SceneReplicationConfig_d6emb")
 
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://cuc6sbm60q8lv")
+_spawnable_scenes = PackedStringArray("uid://d1rod06y6lsy8")
 spawn_path = NodePath("../Projectiles")

@@ -16,7 +16,8 @@ public partial class HurtboxComponent : Area2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public async override void _Process(double delta)
 	{
-		if (GetParent().IsInGroup("Player")) {
+		if (GetParent().IsInGroup("Player"))
+		{
 			if (tookDamage)
 			{
 				// Player will be invincible for 2.5 seconds after taking damage
@@ -38,17 +39,21 @@ public partial class HurtboxComponent : Area2D
 
 	private void OnAreaEntered(Area2D area)
 	{
-		if (area.IsInGroup("Hitbox")) {
+		if (area.IsInGroup("Hitbox"))
+		{
 			hitbox = area.GetParent().GetNode<HitboxComponent>("HitboxComponent");
 			
 			if (!isInvincible)
+			{
 				CallDamage();
+			}
 		}
 	}
 
 	private void OnAreaExited(Area2D area)
 	{
-		if (area.IsInGroup("Hitbox")) {
+		if (!HasOverlappingAreas())
+		{
 			hitbox = null;
 		}
 	}

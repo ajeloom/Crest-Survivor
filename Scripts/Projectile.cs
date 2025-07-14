@@ -13,8 +13,13 @@ public partial class Projectile : CharacterBody2D
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public override void _PhysicsProcess(double delta)
 	{
+		if (!Multiplayer.IsServer())
+		{
+			return;
+		}
+
 		Vector2 velocity = Velocity;
 
 		velocity.X = direction.X * speed;
@@ -28,24 +33,25 @@ public partial class Projectile : CharacterBody2D
 	{
 		if (area.IsInGroup("Hurtbox") && area.GetParent().IsInGroup("Enemy"))
 		{
-			GD.Print("Hit enemy");
-			DestroyRpc();
+			Destroy();
 		}
 	}
 
 	private void OnBodyEntered(Node2D body)
 	{
-		DestroyRpc();
+		Destroy();
 	}
 
 	private void OnTimerTimeout()
 	{
-		DestroyRpc();
+		Destroy();
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void DestroyRpc()
+	private void Destroy()
 	{
-		QueueFree();
+		if (Multiplayer.IsServer())
+		{
+			QueueFree();
+		}
 	}
 }
